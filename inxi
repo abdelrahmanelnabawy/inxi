@@ -205,12 +205,41 @@ sub initialize {
 	Configs::set();
 	# set_downloader();
 	set_display_size();
+	CheckTools::get_gpu_memory();
 }
 
 ## CheckTools
 {
 package CheckTools;
 my (%commands);
+
+sub get_gpu_memory {
+    my $check = `command -v nvidia-smi 2>/dev/null`;
+    if (!$check) {
+        return "Error: nvidia-smi not found. Ensure NVIDIA drivers are installed.\n";
+    }
+
+    my $cmd = "nvidia-smi --query-gpu=gpu_name,driver_version,memory.total,memory.used --format=csv,noheader,nounits 2>/dev/null";
+    my $output = `$cmd`;
+    
+    if ($? != 0 || !$output) {
+        return "Error: Failed to execute nvidia-smi or no GPU found.\n";
+    }
+
+   	my $blue  = "\e[34m";
+    my $reset = "\e[0m";
+    my @gpus = split(/\n/, $output);
+    my $result = "";
+
+    foreach my $index (0 .. $#gpus) {
+        my ($name, $driver, $total, $used) = split(/, /, $gpus[$index]);
+        $result .= "${blue}GPU Version:${reset} $name (Driver: $driver)\n";
+        $result .= "${blue}GPU Memory Usage:${reset} $used MiB / $total MiB\n";
+    }
+
+    print $result;
+}
+
 
 sub set {
 	eval $start if $b_log;
