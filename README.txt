@@ -1,5 +1,6 @@
-README for inxi - a command line system information tool
 ![Profile Views](https://komarev.com/ghpvc/?username=abdelrahmanelnabawy\&label=Profile%20Views\&color=0e75b6\&style=curvy)
+README for inxi - a command line system information tool
+
 
 The new faster, more powerful Perl inxi is here! File all issue reports with the 
 master branch. All support for versions prior to 3.0 is now ended, sorry. 
